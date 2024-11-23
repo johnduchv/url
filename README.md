@@ -12,3 +12,4 @@ chạy ở: http://localhost:2108/
 
 theo dõi redis-cache: http://localhost:2108/monitor.html
 
+xem cấu hình SQL ở file .env
