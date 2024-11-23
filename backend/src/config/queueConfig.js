@@ -2,17 +2,26 @@
 const Queue = require('bull');
 
 // Config chung cho Redis Queue
-const queueRedisConfig = {
+const shortenQueueRedisConfig = {
     host: process.env.REDIS_QUEUE_HOST || 'localhost',
     //port: process.env.REDIS_QUEUE_PORT || 6333,  // Port mới cho Queue
-    port: 6333,  // Port mới cho Queue
+    port: 6397,  // Port mới cho Queue
+
+    password: process.env.REDIS_QUEUE_PASSWORD || process.env.REDIS_PASSWORD
+};
+
+// Config chung cho Redis Queue
+const redirectQueueRedisConfig = {
+    host: process.env.REDIS_QUEUE_HOST || 'localhost',
+    //port: process.env.REDIS_QUEUE_PORT || 6333,  // Port mới cho Queue
+    port: 6379,  // Port mới cho Queue
 
     password: process.env.REDIS_QUEUE_PASSWORD || process.env.REDIS_PASSWORD
 };
 
 // Queue cho việc tạo short URL
 const shortenQueue = new Queue('url-shortening', {
-    redis: queueRedisConfig,  // Sử dụng config mới
+    redis: shortenQueueRedisConfig,  // Sử dụng config mới
     defaultJobOptions: {
         attempts: 3,
         backoff: {
@@ -30,7 +39,7 @@ const shortenQueue = new Queue('url-shortening', {
 
 // Queue cho redirect
 const redirectQueue = new Queue('url-redirect', {
-    redis: queueRedisConfig,  // Sử dụng config mới
+    redis: redirectQueueRedisConfig,  // Sử dụng config mới
     defaultJobOptions: {
         attempts: 2,
         backoff: {
