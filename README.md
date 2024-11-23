@@ -1,4 +1,4 @@
-vào trong backend
+vào trong backend: cd backend
 
 npm install
 
@@ -8,7 +8,7 @@ npm start
 
 npm run queue
 
-[local](http://localhost:2108/)
+chạy ở: http://localhost:2108/
 
-http://localhost:2108/monitor.html
+theo dõi redis-cache: http://localhost:2108/monitor.html
 
