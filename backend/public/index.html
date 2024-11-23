@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        #urlInput {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+
+        #urlInput:focus {
+            outline: none;
+            border-color: #2196f3;
+            box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.1);
+        }
+
+        button {
+            background: #2196f3;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background: #1976d2;
+        }
+
+        button:disabled {
+            background: #b0bec5;
+            cursor: not-allowed;
+        }
+
+        #loading {
+            text-align: center;
+            display: none;
+            color: #666;
+            margin: 20px 0;
+        }
+
+        #error {
+            display: none;
+            color: #f44336;
+            background: #ffebee;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        #result {
+            display: none;
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .copy-button {
+            background: #4caf50;
+            padding: 6px 12px;
+            font-size: 14px;
+            margin-left: 10px;
+            width: auto;
+        }
+
+        .copy-button:hover {
+            background: #388e3c;
+        }
+
+        .copied-message {
+            display: none;
+            color: #4caf50;
+            margin-left: 10px;
+        }
+
+        .cache-hit {
+            color: #4caf50;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .cache-stats {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .clear-cache-btn {
+            background: #ff5722;
+            font-size: 12px;
+            padding: 8px 16px;
+            margin-top: 10px;
+            width: auto;
+        }
+
+        .clear-cache-btn:hover {
+            background: #f4511e;
+        }
+
+        a {
+            color: #2196f3;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .retry-status {
+            background: #fff3e0;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .retry-cancel {
+            background: #f44336;
+            margin-top: 10px;
+        }
+
+        .retry-cancel:hover {
+            background: #d32f2f;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="Enter your URL here..." />
+            <button onclick="shortenUrl()" id="shortenButton">Shorten URL</button>
+        </div>
+
+        <div id="loading">
+            Processing...
+        </div>
+
+        <div id="error" class="error">
+        </div>
+
+        <div id="result" class="result">
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #1e1e1e;
+            color: white;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #2d2d2d;
+            color: white;
+            border: 1px solid #3d3d3d;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #007bff;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:disabled {
+            background-color: #666;
+            cursor: not-allowed;
+        }
+
+        .error {
+            color: #dc3545;
+            margin: 10px 0;
+            padding: 10px;
+            background-color: rgba(220, 53, 69, 0.1);
+            border-radius: 4px;
+            display: none;
+        }
+
+        #loading {
+            display: none;
+            text-align: center;
+            color: #007bff;
+            margin: 10px 0;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #2d2d2d;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .copy-button {
+            background-color: #28a745;
+            padding: 5px 10px;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+
+        .copied-message {
+            color: #28a745;
+            margin-left: 10px;
+            display: none;
+        }
+
+        .retry-status {
+            background-color: #2d2d2d;
+            border: 1px solid #3d3d3d;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .retry-cancel {
+            background-color: #dc3545;
+            margin-top: 10px;
+        }
+
+        /* Cache styles */
+        .cache-hit {
+            color: #28a745;
+            margin-top: 10px;
+            padding: 5px;
+            background-color: rgba(40, 167, 69, 0.1);
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .cache-stats {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #2d2d2d;
+            border: 1px solid #3d3d3d;
+            border-radius: 4px;
+            font-size: 0.9em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .clear-cache-btn {
+            background-color: #dc3545;
+            padding: 5px 10px;
+            font-size: 0.9em;
+        }
+
+        .clear-cache-btn:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>URL Shortener</h1>
+        <div class="input-group">
+            <input type="text" id="urlInput" placeholder="Enter URL (e.g., https://example.com)"
+                aria-label="URL to shorten">
+            <button onclick="shortenUrl()" id="shortenButton">Shorten URL</button>
+        </div>
+        <div id="loading">Processing...</div>
+        <div id="error" class="error"></div>
+        <div id="result" class="result"></div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+</html> -->
